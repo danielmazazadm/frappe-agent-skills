@@ -60,8 +60,7 @@ Mixing roles is the most common cause of unnecessary custom code.
    gh search issues --repo frappe/crm "<error or feature>" --limit 10
    gh search prs --repo frappe/frappe --merged "<error or feature>" --limit 10
    ```
-   If the bug is fixed in a newer release, **upgrade**: staging first, then
-   production. Do not patch around it.
+   If the bug is fixed in a newer release, **propose an upgrade assessment**, not an automatic upgrade. Verify affected versions, dependencies, migration requirements, release notes, staging tests and rollback feasibility. Do not change production without explicit approval. Avoid permanent workarounds for upstream-fixed bugs; if an interim mitigation is necessary, document its expiry and removal plan.
 
 5. **Decision ladder**: stop at the first rung that works.
    1. It already exists and only needs **enabling or configuring**: a setting, role, assignment rule or automation.
@@ -69,6 +68,29 @@ Mixing roles is the most common cause of unnecessary custom code.
    3. **Native API calls** from outside cover it: `/api/resource/<DocType>` or `/api/method/<whitelisted function>`.
    4. An **existing app** already does it.
    5. Only then write custom code. Keep it minimal, keep it in your own app (never in core), and state why rungs 1–4 did not fit.
+
+## Safety and evidence gates
+
+- **Read-only discovery by default.** Inspect source, versions, metadata and documentation without modifying files, database records, configuration or services. Treat even diagnostic commands as potentially sensitive; do not expose credentials or customer data.
+- **Production boundary.** Do not run `bench migrate`, `bench update`, install apps, restart services, write records, execute patches, or change configuration in production without explicit, operation-specific authorization and an approved deployment plan. A user's request to diagnose a problem is not authorization to fix it live.
+- **Version-specific evidence.** Prefer installed source and exact release tags over assumptions about `develop` or latest documentation. Confirm a feature exists in the deployed app/version and that its permissions and configuration fit the use case.
+- **Uncertainty.** If the source, documentation or GitHub is inaccessible, report what could not be checked. Do not fabricate paths, APIs, release notes or upstream fixes.
+- **Safe upgrade decision.** Document compatibility of Frappe and installed apps, database/schema changes, backup and restore validation, maintenance window, staging acceptance tests, and rollback constraints. Never promise rollback after an irreversible migration.
+- **Custom code exception.** When all native options fail, state the precise gap, justify a minimal extension in a separate app, and include tests for permissions, upgrades and regression.
+
+## Example decision report
+
+```text
+Request: [user's desired behavior]
+Environment: [site type: lab/staging/production; installed versions]
+Evidence: [file paths, symbols, documentation URLs, issue/PR links]
+Native options checked: [configuration -> customization -> API -> app]
+Decision: [chosen rung and reason; alternatives rejected]
+Risk: [permissions, compatibility, data impact, reversibility]
+Validation: [read-only checks and tests in lab/staging]
+Approval required: [exact proposed write or deployment action, if any]
+Unknowns: [anything not independently verified]
+```
 
 ## Other platforms
 
