@@ -1,0 +1,13 @@
+{
+  "name": "frappe-agent-skills",
+  "version": "0.1.0",
+  "description": "Verify the native Frappe feature, the installed version and upstream fixes before writing custom code.",
+  "author": {
+    "name": "Daniel Mazaza",
+    "url": "https://github.com/danielmazazadm"
+  },
+  "homepage": "https://github.com/danielmazazadm/frappe-agent-skills",
+  "repository": "https://github.com/danielmazazadm/frappe-agent-skills",
+  "license": "MIT",
+  "keywords": ["frappe", "erpnext", "frappe-crm", "skills", "agents"]
+}
